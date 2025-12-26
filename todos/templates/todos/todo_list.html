@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Todo List</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+
+</head>
+<body>
+<h1>Lista de Tarefas</h1>
+
+<form method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <input id="id_images" type="file" name="images" multiple accept="image/*">
+    <button type="submit">Adicionar</button>
+</form>
+
+<hr>
+
+{% for todo in page_obj %}
+    <div class="todo">
+        <h3>{{ todo.title }}</h3>
+        <p>{{ todo.description }}</p>
+
+        <div class="images" style="width: 50%;">
+            {% if todo.image %}
+                <img src="{{ todo.image.url }}" alt="imagem" />
+            {% endif %}
+            {% for img in todo.images.all %}
+                <img src="{{ img.image.url }}" alt="imagem" />
+            {% endfor %}
+        </div>
+    </div>
+{% endfor %}
+
+<div class="pagination">
+    {% if page_obj.has_previous %}
+        <a href="?page={{ page_obj.previous_page_number }}">⬅ Anterior</a>
+    {% endif %}
+
+    Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}
+
+    {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}">Próxima ➡</a>
+    {% endif %}
+</div>
+
+</body>
+</html>
